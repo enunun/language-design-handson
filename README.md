@@ -81,6 +81,7 @@ scripts/
 lakefile.toml         Leanのビルド設定．
 lean-toolchain        Leanの版．
 mise.toml             ツールの版とタスク(gen/handson/test/lint/check)．
+mise.lock             miseで入れるツールの版とチェックサム．
 .devcontainer/        開発用コンテナの設定．DockerfileでLean 4を入れる．
 lefthook.yml          コミット時の検査．
 ```

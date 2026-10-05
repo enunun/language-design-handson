@@ -20,14 +20,13 @@ RUN curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-ini
 	&& rm /tmp/elan-init.sh /tmp/lean-toolchain \
 	&& lean --version
 
-# ツール(rtk，lefthookなど)はmise.tomlのとおりにイメージへ入れる．
-# 版を固定したい場合は，先に`mise lock`でmise.lockを作り，
-# COPYの対象に加えたうえで`mise install --locked`にする．
+# ツール(rtk，lefthookなど)はmise.tomlとmise.lockのとおりにイメージへ入れる．
+# --lockedにより，mise.lockにない版やチェックサムの合わないファイルは入れない．
 WORKDIR /tmp/mise-bootstrap
-COPY mise.toml ./
+COPY mise.toml mise.lock ./
 RUN mise trust \
 	&& mise ls --current \
-	&& mise install --verbose
+	&& mise install --locked --verbose
 
 # rtkのhookを有効化する．
 RUN mkdir -p /root/.claude \
