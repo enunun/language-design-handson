@@ -1,6 +1,8 @@
-# PROJECT_NAME
+# language-design-handson
 
-TODO: Describe the project overview.
+A hands-on course in programming language design using operational semantics.
+Each chapter defines a small language in Lean 4 and formally verifies its properties (determinism, progress, preservation, type safety, agreement of big-step and small-step semantics).
+The "tests" are the Lean proofs: `lake build Solutions` fails on any `sorry`.
 
 # RTK (Rust Token Killer)
 
@@ -8,7 +10,10 @@ Prefix every shell command with `rtk`, including each command in an `&&` chain �
 
 ## Working conventions
 
-TODO: Describe the development conventions for this project (branching strategy, commit granularity, whether reviews are required, etc.).
+- Edit only `Solutions/`. `Handson/` is generated from it by `mise run gen`: lines between `-- 演習ここから` and `-- 演習ここまで` become `sorry`. Never edit `Handson/` by hand.
+- Every exercise statement must stay provable without `sorry` in `Solutions/` (`warningAsError` is on for that library).
+- Lean is installed by elan in `.devcontainer/Dockerfile`; the version is pinned in `lean-toolchain`. Use only Lean core (no Mathlib).
+- Prose (README, Lean doc comments) is Japanese in the である style with `，` and `．`, checked by textlint for Markdown.
 
 - `git commit` runs the lefthook hooks. If they fail, fix the reported issues. Do not use `--no-verify`.
 
@@ -16,7 +21,10 @@ TODO: Describe the development conventions for this project (branching strategy,
 
 ## Code map
 
-TODO: Describe the main directory structure and the purpose of each directory.
+- `Solutions/ChN*.lean`: chapter sources with complete proofs. `Solutions.lean` imports them all.
+- `Handson/`: generated exercise copies (proofs replaced by `sorry`). `mise run handson` reports which chapters are complete.
+- `scripts/gen-handson.mjs`: generator for `Handson/`; `--check` verifies it is in sync.
+- `lakefile.toml`, `lean-toolchain`: Lean build configuration.
 
 # Artifact Cleanup
 

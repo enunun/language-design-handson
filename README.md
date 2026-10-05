@@ -1,54 +1,86 @@
-# claude-docker-template
+# 操作的意味論による言語設計ハンズオン
 
-Claude Code for VSCode + Docker(mise) + rtkで開発するときの，最小構成のテンプレート．
-言語や作るものは特に決めず，devcontainer・mise・rtk・lefthookの土台だけを提供する．
+小さなプログラミング言語を操作的意味論で定義し，その言語が満たすべき性質を証明支援系Lean 4で形式検証するハンズオンである．
+テストの代わりに証明を書く．
+「簡約は決定的である」「型の付くプログラムは行き詰まらない」といった性質を定理として書き，Leanがその証明を検査する．
+証明が通れば，その性質はすべての入力について成り立つ．
+
+## 章立て
+
+| 章 | ファイル | 言語 | 証明する性質 |
+| --- | --- | --- | --- |
+| 1 | `Ch1Arith.lean` | 真偽値と自然数の式 | 値は簡約されない，簡約の決定性，規則を足すと決定性が崩れる例 |
+| 2 | `Ch2Typing.lean` | 第1章の言語＋型 | 型の一意性，進行，保存，型安全性 |
+| 3 | `Ch3BigStep.lean` | 第1章の言語 | 大ステップ意味論と小ステップ意味論の一致 |
+| 4 | `Ch4STLC.lean` | 単純型付きラムダ計算 | 付け替えと置換による型の保存，進行，保存，型安全性，決定性 |
+
+各章のファイルの冒頭に，その章で扱う考え方の解説を書いている．
+第3章と第4章は第1章だけを前提にするので，第2章の後はどちらから進めてもよい．
+
+## 環境構築
+
+Dockerとdevcontainerを使う．
+VSCodeでこのリポジトリを開き，「Reopen in Container」を実行する．
+イメージにはLean 4(elan経由)，Node.js，miseが入る．
+Leanの版は`lean-toolchain`で固定している．
+VSCodeにLean 4の拡張機能を入れると，証明の途中の状態を見ながら書き進められる．
+
+## 演習の進め方
+
+演習は`Handson/`にある．
+証明を`sorry`のまま配っているので，`sorry`を消して証明を書く．
+演習の番号(演習1-1など)とヒントは，各定理の直前のコメントに書いている．
+
+途中で行き詰まったら，同じ名前のファイルを`Solutions/`で開くと模範解答を読める．
+
+すべての演習が完成したかは，次のコマンドで章ごとに確かめる．
+
+``` sh
+mise run handson
+```
+
+`sorry`が残っている章は「未完成」と表示され，残っている定理の位置が示される．
+
+## 発展課題
+
+ハンズオンを終えたら，言語を拡張して同じ性質が保たれるかを確かめるとよい．
+規則を足すと，どの証明のどの場合が壊れるかをLeanが教えてくれる．
+
+- 第4章の言語に，自然数の型と`succ`や`pred`を足す．
+- 第4章の言語に，組(ペア)の型と，射影`fst`と`snd`を足す．
+- 第4章の言語に`let x = t in u`を足す．置換で定義する方法と，`(fun x => u) t`の略記とする方法を比べる．
+- 第1章の簡約を値呼びから名前呼びに変えると，どの定理が成り立たなくなるか調べる．
+
+## 教材を直す人へ
+
+演習ファイル`Handson/`は，模範解答`Solutions/`から生成している．
+教材を直すときは`Solutions/`だけを編集し，次のコマンドで`Handson/`を作り直す．
+
+``` sh
+mise run gen
+```
+
+模範解答の中で`-- 演習ここから`と`-- 演習ここまで`で囲んだ行が，演習ファイルでは`sorry`になる．
+
+`mise run check`は，次の3点を確かめる．
+CIも同じコマンドを使う．
+
+- `Solutions/`のすべての定理が`sorry`なしで証明されている．`lakefile.toml`で警告をエラーとして扱っている．
+- `Handson/`が`Solutions/`から生成したものと一致する．
+- `Handson/`の定理の主張に型が付く．
 
 ## 構成
 
 ``` text
-.devcontainer/
-  devcontainer.json  VSCode Dev Containersの設定．claude-home/rtk-homeを
-                      ホストにバインドマウントし，資格情報や履歴をコンテナの
-                      再作成後も保つ．
-  Dockerfile          mise公式イメージをベースに，rtk/lefthookをmiseで入れる．
-                      プロジェクト固有のパッケージ・ツールチェーンはここに追加する．
-  compose.yml         コンテナを起動したままにする(sleep infinity)だけの設定．
-.claude/
-  settings.json        Bashツール呼び出しをrtk経由に書き換えるフック．
-                        enunun/system-development-skillsを参照するプラグイン設定も含む．
-.rtk/
-  filters.toml          プロジェクト固有のrtkフィルタ(雛形のみ)．
-mise.toml               ツールの版とタスク(install/fmt/lint/test/check/setup)の雛形．
-lefthook.yml             コミット時の検査の雛形．
-CLAUDE.md                プロジェクト向けのClaude Code指示の雛形．
-.gitignore
+Solutions/            模範解答．すべての証明が完成している．
+Handson/              演習．Solutions/から生成し，証明をsorryにしたもの．
+Solutions.lean        模範解答のライブラリの入口．
+Handson.lean          演習のライブラリの入口．
+scripts/
+  gen-handson.mjs     Solutions/からHandson/を生成する．
+lakefile.toml         Leanのビルド設定．
+lean-toolchain        Leanの版．
+mise.toml             ツールの版とタスク(gen/handson/test/lint/check)．
+.devcontainer/        開発用コンテナの設定．DockerfileでLean 4を入れる．
+lefthook.yml          コミット時の検査．
 ```
-
-## 使い方
-
-1. このフォルダの中身を，新しいプロジェクトのリポジトリのルートにコピーする．
-2. `PROJECT_NAME`という文字列を，プロジェクト名に置き換える(`devcontainer.json`，`compose.yml`，`CLAUDE.md`)．
-3. `mise.toml`の`[tools]`に，プロジェクトが使う言語・ツールを追加する．
-4. `mise.toml`の各タスク(`install`/`fmt`/`lint`/`test`)と，`lefthook.yml`の`format`コマンドを，実際のコマンドに置き換える．
-5. `Dockerfile`に，プロジェクトのビルドに必要なシステムパッケージがあれば追加する．
-6. VSCodeで「Reopen in Container」を実行する．初回は`mise run setup`が走る．
-7. `.gitignore`から`pnpm-lock.yaml`を削除し，lockファイルがコミットされるようにする．
-8. `mise.toml`の`[settings]`と`lockfile = true`の行のコメントを解除し，lockファイルを使用するようにする．
-
-## rtk(Rust Token Killer)について
-
-シェルコマンドの出力を絞り込み，トークン消費を抑えるCLIプロキシ．
-`.claude/settings.json`のフックが，Claude CodeのBashツール呼び出しを自動的に`rtk`経由に書き換える．
-コマンドの詳しい対応表は[rtkのリポジトリ](https://github.com/rtk-ai/rtk)を参照．
-`~/.claude/CLAUDE.md`からrtkの使い方を読み込ませておくと，全プロジェクトで効く．
-
-## 共有スキルについて
-
-`.claude/settings.json`は，[enunun/system-development-skills](https://github.com/enunun/system-development-skills)をプラグインのマーケットプレイスとして参照する設定を含む．成果物を仕上げる`finalize-artifacts`スキルなど，プロジェクトを問わず使うスキルはそちらに集約されている．
-
-## claude-home / rtk-home について
-
-`.devcontainer/claude-home/`と`.devcontainer/rtk-home/`は，コンテナ作成時に
-`initializeCommand`が自動生成し，
-コンテナ内の`/root/.claude`や`/root/.config/rtk`などにバインドマウントされる．
-資格情報や履歴を含むため，`.gitignore`で除外している．

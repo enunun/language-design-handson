@@ -1,12 +1,12 @@
 {
-	"name": "PROJECT_NAME-dev",
+	"name": "language-design-handson-dev",
 	"dockerComposeFile": "./compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces",
 	"shutdownAction": "stopCompose",
 	"customizations": {
 		"vscode": {
-			"extensions": ["anthropic.claude-code", "growthjack.claude-code-usage"]
+			"extensions": ["anthropic.claude-code", "growthjack.claude-code-usage", "leanprover.lean4"]
 		}
 	},
 	"postCreateCommand": "mise run setup",

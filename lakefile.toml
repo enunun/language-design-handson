@@ -1,0 +1,12 @@
+name = "language-design-handson"
+defaultTargets = ["Solutions", "Handson"]
+
+# 模範解答．すべての性質が証明済みであることを，sorryの警告をエラーにして確かめる．
+[[lean_lib]]
+name = "Solutions"
+leanOptions = { warningAsError = true, autoImplicit = false }
+
+# 受講者が取り組む演習．証明はsorryのまま配布するので，警告を許す．
+[[lean_lib]]
+name = "Handson"
+leanOptions = { autoImplicit = false }

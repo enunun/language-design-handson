@@ -10,8 +10,15 @@ RUN apt-get update \
 	libatomic1 \
 	&& rm -rf /var/lib/apt/lists/*
 
-# ここにプロジェクト固有のシステムパッケージ・ツールチェーンのインストールを追加する
-# (例: ネイティブビルドのリンカ，画像/PDF変換ツール，各言語のランタイムなど)．
+# 証明支援系Lean 4を，版管理ツールelanで入れる．
+# 使うLeanの版はリポジトリのlean-toolchainで固定し，イメージの作成時に取得しておく．
+ENV ELAN_HOME=/opt/elan \
+	PATH=/opt/elan/bin:$PATH
+COPY lean-toolchain /tmp/lean-toolchain
+RUN curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o /tmp/elan-init.sh \
+	&& sh /tmp/elan-init.sh -y --no-modify-path --default-toolchain "$(cat /tmp/lean-toolchain)" \
+	&& rm /tmp/elan-init.sh /tmp/lean-toolchain \
+	&& lean --version
 
 # ツール(rtk，lefthookなど)はmise.tomlのとおりにイメージへ入れる．
 # 版を固定したい場合は，先に`mise lock`でmise.lockを作り，
