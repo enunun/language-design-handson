@@ -4,7 +4,8 @@ lefthook = "2.1.14"
 node = "26.10.0"
 pnpm = "12.6.0"
 # Lean 4はmiseではなくelanで入れる(.devcontainer/Dockerfile)．版はlean-toolchainで固定する．
-# ツールを追加・更新したら`mise lock`を実行し，生成されたmise.lockもコミットする．
+# ツールを追加・更新したら`mise lock --global`を実行し，更新されたmise.lockもコミットする．
+# devcontainerではこのファイルをグローバル設定として読む(MISE_GLOBAL_CONFIG_FILE)ので，--globalが要る．
 
 [settings]
 lockfile = true
