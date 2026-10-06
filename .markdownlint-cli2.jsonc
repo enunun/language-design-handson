@@ -1,6 +1,10 @@
 {
 	"config": {
-		"default": true
+		"default": true,
+		// Iterationごとに同じ小見出しを繰り返すので，同じ親の下での重複だけを禁止する．
+		"MD024": { "siblings_only": true },
+		// 使用例はコマンドと出力をそのまま載せるので，コードブロックの行の長さは検査しない．
+		"MD013": { "code_blocks": false }
 	},
 	"globs": [
 		"**/*.md"
