@@ -56,7 +56,7 @@ VSCodeには，証明の状態を表示するLean 4拡張と，数式とMermaid�
 | [5](iterations/iteration-5/) | 変数と`let` | [Lean](docs/lean/iteration-5.md)，[意味論](docs/semantics/iteration-5.md) |
 | [6](iterations/iteration-6/) | 関数と関数適用 | [Lean](docs/lean/iteration-6.md)，[意味論](docs/semantics/iteration-6.md) |
 | [7](iterations/iteration-7/) | 再帰 | [Lean](docs/lean/iteration-7.md)，[意味論](docs/semantics/iteration-7.md) |
-| 8 | 組 | |
+| [8](iterations/iteration-8/) | 組 | [Lean](docs/lean/iteration-8.md)，[意味論](docs/semantics/iteration-8.md) |
 
 ノートは，そのIterationで初めて使うLeanの構文と，初めて扱う意味論の考え方を説明する．
 
