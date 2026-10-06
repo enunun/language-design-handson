@@ -185,7 +185,7 @@ $ lake exe mini steps "(1 + 2) * (3 + 4)"
 
 ### 学ぶこと
 
-- Lean：帰納法での`generalizing`，`Option`，存在量化と`⟨_, _⟩`，`rcases`．
+- Lean：帰納法での`generalizing`と`generalize`，`Option`と`Option.map`，存在量化と`⟨_, _⟩`，`obtain`，`split`と`unfold`，`<;>`と`simp_all`．
 - 意味論：小ステップ意味論，正規形，反射推移閉包．
 - 性質：小ステップの決定性，`step`の健全性と完全性(`step t = some t' ↔ t ⟶ t'`)，`t ⇓ n ↔ t ⟶* num n`．
 
