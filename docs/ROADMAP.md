@@ -232,7 +232,7 @@ $ lake exe mini eval "1 + true"
 
 ### 学ぶこと
 
-- Lean：`Option`の`do`記法，`contradiction`．
+- Lean：複数の値についての`match`，`Bool`と`==`，`rcases`のパターン，`≠`，名前付き引数．
 - 意味論：値，行き詰まった項，評価戦略．
 - 性質：`if`の枝を先に簡約する規則を足すと決定性が崩れること(反例の証明)．
 

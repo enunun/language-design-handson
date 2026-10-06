@@ -1,0 +1,15 @@
+name = "mini-iteration-3-exercise"
+defaultTargets = ["Mini", "mini"]
+testDriver = "MiniTest"
+
+[[lean_lib]]
+name = "Mini"
+leanOptions = { autoImplicit = false, warningAsError = true }
+
+[[lean_lib]]
+name = "MiniTest"
+leanOptions = { autoImplicit = false, warningAsError = true }
+
+[[lean_exe]]
+name = "mini"
+root = "Main"
