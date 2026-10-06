@@ -30,6 +30,10 @@ inductive HasType : Ctx → Term → Ty → Prop where
   | var {Γ : Ctx} {x : String} {T : Ty} : Γ.lookup x = some T → HasType Γ (.var x) T
   | let_ {Γ : Ctx} {x : String} {t u : Term} {T U : Ty} :
       HasType Γ t T → HasType ((x, T) :: Γ) u U → HasType Γ (.let_ x t u) U
+  | lam {Γ : Ctx} {x : String} {A B : Ty} {t : Term} :
+      HasType ((x, A) :: Γ) t B → HasType Γ (.lam x A t) (.arrow A B)
+  | app {Γ : Ctx} {t₁ t₂ : Term} {A B : Ty} :
+      HasType Γ t₁ (.arrow A B) → HasType Γ t₂ A → HasType Γ (.app t₁ t₂) B
 
 /-- 型エラー． -/
 inductive TypeError where
@@ -39,6 +43,8 @@ inductive TypeError where
   | branches (thenTy elseTy : Ty)
   /-- 変数`x`が文脈にない． -/
   | unbound (x : String)
+  /-- 関数でない型`actual`の式を，関数として適用した． -/
+  | notFunction (actual : Ty)
   deriving Repr, DecidableEq
 
 /-- 型検査器．文脈`Γ`のもとで式`t`の型を求める．型が付かないときは，その理由を返す． -/
@@ -87,5 +93,15 @@ def typeOf (Γ : Ctx) : Term → Except TypeError Ty
     match typeOf Γ t with
     | .ok T => typeOf ((x, T) :: Γ) u
     | .error err => .error err
+  | .lam x A t =>
+    match typeOf ((x, A) :: Γ) t with
+    | .ok B => .ok (.arrow A B)
+    | .error err => .error err
+  | .app t₁ t₂ =>
+    match typeOf Γ t₁, typeOf Γ t₂ with
+    | .ok (.arrow A B), .ok A' => if A' = A then .ok B else .error (.mismatch "関数の引数" A A')
+    | .ok T, .ok _ => .error (.notFunction T)
+    | .error err, _ => .error err
+    | _, .error err => .error err
 
 end Mini

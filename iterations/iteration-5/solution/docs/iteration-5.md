@@ -178,6 +178,7 @@ error: MiniTest/Unit/TypingTest.lean:144:8: declaration uses `sorry`
 #### `eval_not_stuck`
 
 `eval_stuck`で行き詰まった式への簡約列を作り，型安全性と矛盾させた．
+`eval_of_hasType`だけが使っていた値の型`Value.ty`は，使われなくなったので消した．
 
 ### `run`と`--fuel`
 

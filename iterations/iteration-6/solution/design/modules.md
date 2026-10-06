@@ -28,7 +28,7 @@ flowchart LR
 - `Mini.BigStep`：大ステップ意味論`Eval`(記法`t ⇓ v`)．
 - `Mini.SmallStep`：値を表す式`IsValue`，小ステップ意味論`Step`(記法`t ⟶ t'`)，多ステップ簡約`Steps`(記法`t ⟶* t'`)，正規形`Normal`と行き詰まった式`Stuck`．
 - `Mini.Eval`：1ステップ簡約する関数`step`と，それを燃料の回数まで繰り返す評価器`eval`．
-- `Mini.Pretty`：式と値と型を文字列にする`Term.pretty`，`Value.pretty`，`Ty.pretty`．
+- `Mini.Pretty`：式と値と型を文字列にする`Term.pretty`，`Value.pretty`，`Ty.pretty`．関数の値は，その関数を表す式として表示する．
 - `Mini.Parser`：配布された構文解析器`parse`．
 - `Mini.Run`：構文解析と型検査と評価をつなぐ`run`，型を表示する`runCheck`，簡約列を表示する`runSteps`．型エラーと評価のエラーを文字列にする`TypeError.message`と`EvalError.message`もここに置く．
 - `Main`：コマンド`mini eval <式>`，`mini steps <式>`，`mini check <式>`と，燃料を指定するオプション`--fuel`．

@@ -54,7 +54,7 @@ VSCodeには，証明の状態を表示するLean 4拡張と，数式とMermaid�
 | [3](iterations/iteration-3/) | 真偽値と条件分岐 | [Lean](docs/lean/iteration-3.md)，[意味論](docs/semantics/iteration-3.md) |
 | [4](iterations/iteration-4/) | 型と型検査器 | [Lean](docs/lean/iteration-4.md)，[意味論](docs/semantics/iteration-4.md) |
 | [5](iterations/iteration-5/) | 変数と`let` | [Lean](docs/lean/iteration-5.md)，[意味論](docs/semantics/iteration-5.md) |
-| 6 | 関数と関数適用 | |
+| [6](iterations/iteration-6/) | 関数と関数適用 | [Lean](docs/lean/iteration-6.md)，[意味論](docs/semantics/iteration-6.md) |
 | 7 | 再帰 | |
 | 8 | 組 | |
 
