@@ -1,20 +1,18 @@
 {
-  "name": "workspaces",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "language-design-handson",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint:text": "git ls-files '*.md' -z | xargs -0 -r textlint",
-    "lint:markdown": "git ls-files '*.md' -z | xargs -0 -r markdownlint-cli2",
-    "lint": "pnpm run lint:text && pnpm run lint:markdown"
+    "lint:text": "git ls-files --cached --others --exclude-standard '*.md' -z | xargs -0 -r textlint",
+    "lint:markdown": "git ls-files --cached --others --exclude-standard '*.md' -z | xargs -0 -r markdownlint-cli2",
+    "lint:diagrams": "node scripts/check-diagrams.mjs",
+    "lint:math": "node scripts/check-math.mjs",
+    "lint": "pnpm run lint:text && pnpm run lint:markdown && pnpm run lint:diagrams && pnpm run lint:math"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.7.0",
+    "jsdom": "^30.1.2",
     "markdownlint-cli2": "^0.23.3",
+    "mathjax-full": "^3.2.2",
+    "mermaid": "^11.17.2",
     "textlint": "^15.8.0",
     "textlint-filter-rule-comments": "^1.3.0",
     "textlint-plugin-mdx": "^1.1.0",
@@ -23,5 +21,6 @@
     "textlint-rule-preset-ja-spacing": "^3.0.3",
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
     "textlint-rule-prh": "^6.1.0"
-  }
+  },
+  "private": true
 }

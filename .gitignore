@@ -79,3 +79,9 @@ node_modules/
 # Lean (lake build output)
 # ---------------------------------------------------------------
 .lake/
+
+# Lake writes a manifest into each package; the packages have no dependencies.
+iterations/**/lake-manifest.json
+
+# Scratch files learners create in a package to try things with #eval
+iterations/**/Scratch.lean

@@ -33,7 +33,7 @@ $ lake exe mini eval --fuel 1000 "(fix loop (n : Nat) : Nat => loop n) 0"
 
 1. テストリスト：要件と使用例から，証明すべき性質と確かめる具体例を`TESTLIST.md`に書き出す．
 2. 設計書：言語仕様書(構文と推論規則)とモジュール依存図を更新する．
-3. テストファースト実装：テストリストの項目を1つずつ，Red → Green → Refactorで進める．
+3. テストファーストの実装：テストリストの項目を1つずつ，Red → Green → Refactorで進める．
 4. 設計レビュー：設計書と実装を見比べ，食い違いを直す．
 
 このハンズオンのテストは，すべてLeanの定理である．
@@ -107,7 +107,7 @@ $ lake exe mini eval "1 +"
 ### 受講者が行うツールの操作
 
 - `lake build`，`lake test`，`lake exe mini eval "<式>"`を実行する．
-- 新しいテストファイルを作り，`MiniTest.lean`にimportを足す．
+- 新しいテストファイルを作り，`MiniTest/Unit.lean`または`MiniTest/Integration.lean`にimportを足す．
 - 設計書の検査`mise run check-design`を実行する．
 
 ## Iteration 1 大ステップ意味論と評価器の正しさ

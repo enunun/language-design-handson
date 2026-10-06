@@ -14,46 +14,31 @@ lockfile = true
 description = "依存パッケージをインストールする"
 run = "pnpm install --frozen-lockfile"
 
-[tasks.fmt]
-description = "コードと文書を整形する"
-depends = ["install"]
-run = "echo 'Leanには標準の整形ツールがないため，整形は行わない'"
-
-[tasks.gen]
-description = "模範解答(Solutions/)から演習ファイル(Handson/)を作り直す"
-run = "node scripts/gen-handson.mjs"
-
-[tasks.handson]
-description = "演習の証明が完成したか(sorryが残っていないか)を章ごとに確かめる"
-run = """
-#!/usr/bin/env bash
-set -u
-lake build Handson >/dev/null 2>&1 || { lake build Handson; exit 1; }
-status=0
-for f in Handson/*.lean; do
-  if out=$(lake env lean -DwarningAsError=true -DautoImplicit=false "$f" 2>&1); then
-    echo "完成   $f"
-  else
-    echo "未完成 $f"
-    echo "$out" | sed 's/^/    /'
-    status=1
-  fi
-done
-exit $status
-"""
-
 [tasks.lint]
-description = "すべてのリントを実行する"
+description = "文書を検査する(textlint，markdownlint，Mermaidの図，数式)"
 depends = ["install"]
 run = "pnpm lint"
 
 [tasks.test]
-description = "模範解答の性質がすべて証明済みであることと，演習ファイルが模範解答と一致することを確かめる"
-run = [
-  "lake build Solutions",
-  "node scripts/gen-handson.mjs --check",
-  "lake build Handson",
-]
+description = "すべてのIterationの演習と解答をビルドし，テスト(証明)を検査する"
+run = """
+#!/usr/bin/env bash
+set -eu
+shopt -s nullglob
+for dir in iterations/iteration-*/exercise iterations/iteration-*/solution; do
+  echo "== $dir"
+  (cd "$dir" && lake build && lake test)
+done
+"""
+
+[tasks.check-design]
+description = "設計書(design/)と実装を照合する．パッケージのディレクトリで実行すると，そのパッケージだけを照合する"
+depends = ["install"]
+run = "node scripts/check-design.mjs"
+
+[tasks.check-exercises]
+description = "各Iterationの演習が，前のIterationの解答と同じ状態から始まることを確かめる"
+run = "node scripts/check-exercises.mjs"
 
 [tasks.hooks]
 description = "Gitのフック(コミット時の検査)を設定する"
@@ -64,5 +49,5 @@ description = "開発環境を整える(依存パッケージ，Gitのフック�
 depends = ["install", "hooks"]
 
 [tasks.check]
-description = "整形の検査，リント，単体テストなどをまとめて実行する(CIと同じ)"
-depends = ["lint", "test"]
+description = "リント，全パッケージのテスト，設計書の照合，演習と前の解答の一致をまとめて確かめる(CIと同じ)"
+depends = ["lint", "test", "check-design", "check-exercises"]
