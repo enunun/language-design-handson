@@ -1,6 +1,10 @@
 {
 	"config": {
-		"default": true
+		"default": true,
+		// Iterationごとに同じ小見出しを繰り返すので，同じ親の下での重複だけを禁止する．
+		"MD024": { "siblings_only": true },
+		// 文書は1文を1行に書く．和文には折り返せる空白がなく，長い行は数式やコードを含む行なので，行の長さは検査しない．
+		"MD013": false
 	},
 	"globs": [
 		"**/*.md"

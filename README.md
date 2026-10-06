@@ -1,54 +1,77 @@
-# claude-docker-template
+# 操作的意味論による言語設計ハンズオン
 
-Claude Code for VSCode + Docker(mise) + rtkで開発するときの，最小構成のテンプレート．
-言語や作るものは特に決めず，devcontainer・mise・rtk・lefthookの土台だけを提供する．
+小さな関数型言語Miniの処理系を，証明支援系Lean 4で育てるハンズオンである．
+Iterationごとに言語へ機能を足し，その意味を推論規則で定め，評価器と型検査器を実装する．
+テストはすべてLeanの定理として書く．
+実装が意味論に従うことと，言語が満たすべき性質(決定性や型安全性など)を証明する．
 
-## 構成
+## 学ぶこと
 
-``` text
-.devcontainer/
-  devcontainer.json  VSCode Dev Containersの設定．claude-home/rtk-homeを
-                      ホストにバインドマウントし，資格情報や履歴をコンテナの
-                      再作成後も保つ．
-  Dockerfile          mise公式イメージをベースに，rtk/lefthookをmiseで入れる．
-                      プロジェクト固有のパッケージ・ツールチェーンはここに追加する．
-  compose.yml         コンテナを起動したままにする(sleep infinity)だけの設定．
-.claude/
-  settings.json        Bashツール呼び出しをrtk経由に書き換えるフック．
-                        enunun/system-development-skillsを参照するプラグイン設定も含む．
-.rtk/
-  filters.toml          プロジェクト固有のrtkフィルタ(雛形のみ)．
-mise.toml               ツールの版とタスク(install/fmt/lint/test/check/setup)の雛形．
-lefthook.yml             コミット時の検査の雛形．
-CLAUDE.md                プロジェクト向けのClaude Code指示の雛形．
-.gitignore
+- 小さな言語を設計し，検証する．新しい言語機能の構文・評価規則・型付け規則を定義し，型安全性などの性質をLeanで証明する．
+- 論文や言語仕様にある推論規則を読む．
+- 評価戦略や型付け規則の選択肢を，性質が保たれるかどうかで比べる．
+- 評価器と型検査器を実装し，それが意味論に従うことを証明する．
+
+プログラミングと単体テストの経験を前提とする．
+Leanと操作的意味論の知識は前提としない．
+
+## 環境の準備
+
+DockerとVSCode(拡張機能Dev Containers)を使う．
+
+1. このリポジトリをVSCodeで開き，コマンドパレットで「Dev Containers: Reopen in Container」を実行する．
+2. 初回は，コンテナの作成後に`mise run setup`が自動で実行され，依存パッケージとGitのフックが入る．
+3. コンテナの端末で次のコマンドを実行し，すべての検査が通ることを確かめる．
+
+``` sh
+mise run check
 ```
 
-## 使い方
+コンテナにはLean 4が入っている．版は`lean-toolchain`で固定している．
+VSCodeには，証明の状態を表示するLean 4拡張と，数式とMermaidの図を表示するMarkdown Preview Enhancedが入る．
+使えるタスクの一覧は`mise tasks`で表示できる．
 
-1. このフォルダの中身を，新しいプロジェクトのリポジトリのルートにコピーする．
-2. `PROJECT_NAME`という文字列を，プロジェクト名に置き換える(`devcontainer.json`，`compose.yml`，`CLAUDE.md`)．
-3. `mise.toml`の`[tools]`に，プロジェクトが使う言語・ツールを追加する．
-4. `mise.toml`の各タスク(`install`/`fmt`/`lint`/`test`)と，`lefthook.yml`の`format`コマンドを，実際のコマンドに置き換える．
-5. `Dockerfile`に，プロジェクトのビルドに必要なシステムパッケージがあれば追加する．
-6. VSCodeで「Reopen in Container」を実行する．初回は`mise run setup`が走る．
-7. `.gitignore`から`pnpm-lock.yaml`を削除し，lockファイルがコミットされるようにする．
-8. `mise.toml`の`[settings]`と`lockfile = true`の行のコメントを解除し，lockファイルを使用するようにする．
+## 進め方
 
-## rtk(Rust Token Killer)について
+各Iterationは`iterations/iteration-N/`にある．
+`exercise/`で作業し，`solution/`で模範解答を確かめる．
+`exercise/`は前のIterationの`solution/`と同じ状態から始まる．
 
-シェルコマンドの出力を絞り込み，トークン消費を抑えるCLIプロキシ．
-`.claude/settings.json`のフックが，Claude CodeのBashツール呼び出しを自動的に`rtk`経由に書き換える．
-コマンドの詳しい対応表は[rtkのリポジトリ](https://github.com/rtk-ai/rtk)を参照．
-`~/.claude/CLAUDE.md`からrtkの使い方を読み込ませておくと，全プロジェクトで効く．
+どのIterationも，テストリスト → 設計書 → テストファーストの実装 → 設計レビューの順に進める．
+手順は各Iterationの`exercise/docs/iteration-N.md`にある．
 
-## 共有スキルについて
+- [ロードマップ](docs/ROADMAP.md)：完成するプログラムと，各Iterationで作るもの・学ぶこと．
+- [定理によるテスト駆動開発](docs/tdd.md)：テストの書き方とテストリストの作り方．
+- [設計書の書き方](docs/design.md)：言語仕様書とモジュール依存図．
 
-`.claude/settings.json`は，[enunun/system-development-skills](https://github.com/enunun/system-development-skills)をプラグインのマーケットプレイスとして参照する設定を含む．成果物を仕上げる`finalize-artifacts`スキルなど，プロジェクトを問わず使うスキルはそちらに集約されている．
+## Iterationの一覧
 
-## claude-home / rtk-home について
+| Iteration | 作る機能 | ノート |
+| --- | --- | --- |
+| [0](iterations/iteration-0/) | 自然数の四則と評価器 | [Lean](docs/lean/iteration-0.md)，[意味論](docs/semantics/iteration-0.md) |
+| [1](iterations/iteration-1/) | 大ステップ意味論と評価器の正しさ | [Lean](docs/lean/iteration-1.md)，[意味論](docs/semantics/iteration-1.md) |
+| [2](iterations/iteration-2/) | 簡約列の表示 | [Lean](docs/lean/iteration-2.md)，[意味論](docs/semantics/iteration-2.md) |
+| [3](iterations/iteration-3/) | 真偽値と条件分岐 | [Lean](docs/lean/iteration-3.md)，[意味論](docs/semantics/iteration-3.md) |
+| [4](iterations/iteration-4/) | 型と型検査器 | [Lean](docs/lean/iteration-4.md)，[意味論](docs/semantics/iteration-4.md) |
+| [5](iterations/iteration-5/) | 変数と`let` | [Lean](docs/lean/iteration-5.md)，[意味論](docs/semantics/iteration-5.md) |
+| [6](iterations/iteration-6/) | 関数と関数適用 | [Lean](docs/lean/iteration-6.md)，[意味論](docs/semantics/iteration-6.md) |
+| [7](iterations/iteration-7/) | 再帰 | [Lean](docs/lean/iteration-7.md)，[意味論](docs/semantics/iteration-7.md) |
+| [8](iterations/iteration-8/) | 組 | [Lean](docs/lean/iteration-8.md)，[意味論](docs/semantics/iteration-8.md) |
 
-`.devcontainer/claude-home/`と`.devcontainer/rtk-home/`は，コンテナ作成時に
-`initializeCommand`が自動生成し，
-コンテナ内の`/root/.claude`や`/root/.config/rtk`などにバインドマウントされる．
-資格情報や履歴を含むため，`.gitignore`で除外している．
+ノートは，そのIterationで初めて使うLeanの構文と，初めて扱う意味論の考え方を説明する．
+
+## ディレクトリ構成
+
+``` text
+iterations/iteration-N/
+  exercise/            受講者が作業するパッケージ
+  solution/            完成した演習と模範解答
+docs/
+  ROADMAP.md           ロードマップ
+  tdd.md               定理によるテスト駆動開発
+  design.md            設計書の書き方
+  lean/                Iterationごとの，Leanの構文とtacticのノート
+  semantics/           Iterationごとの，意味論の考え方のノート
+scripts/               教材の検査スクリプト(数式，図，設計書と実装の照合)
+COURSE.md              教材を作る人のためのコース計画
+```

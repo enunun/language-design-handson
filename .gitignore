@@ -74,5 +74,14 @@ tmp/
 
 # node
 node_modules/
-# 実際に使用する場合には、pnpm-lock.yamlをコミットすることが推奨される
-pnpm-lock.yaml
+
+# ---------------------------------------------------------------
+# Lean (lake build output)
+# ---------------------------------------------------------------
+.lake/
+
+# Lake writes a manifest into each package; the packages have no dependencies.
+iterations/**/lake-manifest.json
+
+# Scratch files learners create in a package to try things with #eval
+iterations/**/Scratch.lean

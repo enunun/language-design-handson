@@ -1,0 +1,1 @@
+-- 統合テストの入口．MiniTest/Integration/に作ったテストファイルを，ここでimportする．
