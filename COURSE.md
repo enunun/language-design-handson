@@ -48,6 +48,7 @@
 - 数式は，文中では`$…$`で，独立した式は数式のコードブロック(` ```math `)で書く．GitHubとMarkdown Preview Enhancedのどちらでも表示でき，textlintは数式のコードブロックを文章として検査しない．
 - `## 構文`：BNFを数式のコードブロックで書く．
 - `## 意味`：関係ごとに`### <説明>\`<Leanの名前>\``という見出しを立て，その下に推論規則を書く．
+- `## 型`(Iteration 4から)：型の構文と，型付け規則を`## 意味`と同じ形で書く．
   推論規則は`\frac{前提}{結論}\ \textsf{<構成子名>}`の形で書く．
 - `## 性質`：`- \`<定理名>\`：<主張の説明>`の形の箇条書き．
 - Iteration 0は推論規則を使わず，`eval`の等式で意味を書く．Iteration 1で推論規則に置き換える．
@@ -57,7 +58,7 @@
 `mise run check-design`が，次の3点を照合する．
 
 - モジュール依存図の矢印と，`Mini/`と`Main.lean`のimport文．図にだけある矢印と，コードにだけあるimportを報告する．`Mini.lean`(ライブラリの入口)とLeanの標準ライブラリは照合から外す．
-- 言語仕様書の`### … \`Name\``の下にある規則名の集合と，`inductive Name`の構成子名の集合．
+- 言語仕様書の`## 意味`と`## 型`にある`### …\`Name\``の節の規則名の集合と，`inductive Name`の構成子名の集合．
 - 言語仕様書の`## 性質`に挙げた定理名が，`MiniTest/`に`theorem`として存在すること．
 
 数式はMathJaxで，Mermaidの図はMermaidの構文解析器で検査する(`mise run lint`)．
@@ -191,6 +192,7 @@ Iteration 0だけは，演習の`Mini/Parser.lean`に最初から入れておく
   エラボレータの評価器が部分計算を共有しないためである．
   `run "1 + 2" = "3"`のような具体例は`decide +kernel`で証明する．
   `native_decide`はコンパイラを信頼する公理が加わるので使わない．
+- `Except`には等しさを判定するインスタンスがないので，`typeOf t = .ok T`のような具体例は`decide`で証明できない(`failed to synthesize Decidable`になる)．`rfl`で証明する．
 - `open Term`の後で`ite`という名前の構成子をパターンに書くと，`_root_.ite`と曖昧になる．パターンでは`.ite`と書く．
 - 警告をエラーとして扱うので，`@[inherit_doc]`を付けた記法の対象にはdocコメントが要る．
 - コンテナの中では`mise.toml`がグローバル設定として読まれるので，`mise.lock`の更新は`mise lock --global`で行う．

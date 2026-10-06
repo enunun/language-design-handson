@@ -7,13 +7,16 @@
 //
 // 照合する内容：
 //   1. design/modules.mdの依存の矢印と，Mini/とMain.leanのimport文．
-//   2. design/spec.mdの「## 意味」にある「### … `Name`」の節の規則名(\textsf{…})と，inductive Nameの構成子名．
+//   2. design/spec.mdの「## 意味」と「## 型」にある「### …`Name`」の節の規則名(\textsf{…})と，inductive Nameの構成子名．
 //   3. design/spec.mdの「## 性質」に挙げた定理名が，MiniTest/にtheoremとしてあること．
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fencedBlocks, withoutCode } from "./lib/markdown.mjs";
 import { allPackages, leanFiles, moduleName, packageContaining } from "./lib/packages.mjs";
+
+/** 推論規則を書く節．この下の「### …`Name`」の節を，inductive Nameと照合する． */
+const RULE_SECTIONS = ["意味", "型"];
 
 function targetDirs(args) {
   if (args.length > 0) return args;
@@ -114,7 +117,7 @@ function checkPackage(dir) {
 
   if (existsSync(specDoc)) {
     const spec = sections(readFileSync(specDoc, "utf8"));
-    for (const sec of spec.filter((x) => x.level === 3 && x.parent === "意味")) {
+    for (const sec of spec.filter((x) => x.level === 3 && RULE_SECTIONS.includes(x.parent))) {
       const m = sec.title.match(/`([A-Za-z_][\w]*)`$/);
       if (!m) continue;
       const math = fencedBlocks(sec.body)

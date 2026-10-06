@@ -278,7 +278,7 @@ $ lake exe mini eval "1 + true"
 
 ### 学ぶこと
 
-- Lean：`Except`，相互に関係する補題の組み立て，`have`．
+- Lean：`Except`と`rfl`による具体例，`Or`と`.inl`・`.inr`，`rcases`による`Or`と`∃`の分解，`first`と`all_goals`，等式の`symm`と`trans`．
 - 意味論：型付け規則，標準形補題，進行と保存．
 - 性質：`typeOf`の健全性と完全性，型の一意性，進行，保存，型安全性(型の付く項は行き詰まらない)．統合テストとして「型検査を通ったプログラムを`run`しても実行時エラーにならない」．
 
@@ -288,7 +288,6 @@ $ lake exe mini eval "1 + true"
 
 ### 受講者が行うツールの操作
 
-- 配布された新しい`Parser.lean`で置き換える．
 - 単体テストだけ，統合テストだけを実行する．
 
 ## Iteration 5 変数と`let`
