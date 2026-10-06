@@ -305,19 +305,26 @@ $ lake exe mini eval "let x = 1 + 2 in x * x"
 9
 $ lake exe mini check "let x = 1 in y"
 型エラー：変数yが定義されていない
+$ lake exe mini eval --fuel 2 "1 + 2 + 3"
+燃料切れ：2ステップで評価が終わらなかった
 ```
 
 ### モジュール
 
-- `Mini/Syntax.lean`：構成子`var (x : String)`と`let_ (x : String) (t u : Term)`を足す．
-- `Mini/Subst.lean`(新規)：置換`t[x := v]`．
+- `Mini/Syntax.lean`：構成子`var (x : String)`と`let_ (x : String) (t u : Term)`を足す．式が値を表すならその値を返す`Term.toValue?`を足す．
+- `Mini/Subst.lean`(新規)：置換$t[x := v]$．
   `def subst (x : String) (v t : Term) : Term`．
-- `Mini/Typing.lean`：型付け文脈`Ctx`を足し，`HasType : Ctx → Term → Ty → Prop`に変える．
+- `Mini/SmallStep.lean`：値を表す式`IsValue`と，`let`の規則を足す．
+- `Mini/Typing.lean`：型付け文脈`Ctx`を足し，`HasType : Ctx → Term → Ty → Prop`と`typeOf : Ctx → Term → Except TypeError Ty`に変える．
 - `Mini/Eval.lean`：`eval : Nat → Term → Except EvalError Value`に変える．第1引数は燃料である．
+- `Mini/Run.lean`：`run`と`runSteps`に，燃料の引数(既定値`1000`)を足す．
+- `Main.lean`：オプション`--fuel <数>`を足す．
 
 ### リファクタリング
 
-置換した項は元の項より小さいとは限らないので，`eval`は項についての構造的な再帰で定義できなくなる．燃料を引数に足し，燃料についての再帰で定義し直す．
+置換した項は元の項より小さいとは限らないので，`eval`は項についての構造的な再帰で定義できなくなる．
+`eval`を，`step`を燃料の回数まで繰り返す関数として定義し直す．
+これに伴い，式の等価性の定理は大ステップ意味論で述べ直し，大ステップ意味論の決定性は導出についての帰納法で直接証明する．
 
 ### 設計書の更新
 
@@ -326,15 +333,19 @@ $ lake exe mini check "let x = 1 in y"
 
 ### 学ぶこと
 
-- Lean：`String`の比較と`if`，`termination_by`ではなく燃料を使う理由，`omega`．
+- Lean：`String`の比較と`if`，`by_cases`，構造的な再帰で書けない関数と燃料，既定値を持つ引数，`generalize`した等式を使う帰納法．
 - 意味論：自由変数，閉じた項，置換，型付け文脈，弱化と置換補題．
 - 性質：置換補題，燃料つき評価器の健全性と完全性．
   健全性は`eval k t = .ok v → t ⇓ v`，完全性は`t ⇓ v → ∃ k, eval k t = .ok v`である．
 
 ### 既存のテストへの影響
 
-- 型付けの定理をすべて，空の文脈`[]`を使う形に変える．
-- `eval`の具体例と性質に燃料の引数を足す．
+- 型付けの定理を，文脈を引数にとる形か，空の文脈`[]`を使う形に変える．
+- `eval`の具体例と性質に燃料の引数を足し，結果の型を`Except EvalError Value`に変える．
+- 式の等価性の定理を，`eval`の等式から大ステップ意味論の同値に変え，`BigStepTest`に移す．
+- `eval_deterministic`を，大ステップ意味論について直接証明する`bigstep_deterministic`に変える．
+- `eval_of_hasType`(型の付く式は必ず値になる)を，燃料のある評価器について述べ直した`eval_not_stuck`(型の付く式の評価は行き詰まらない)に変える．
+- `run "1 + x"`の期待値を，構文エラーから型エラーに変える．`x`が変数として読まれるからである．
 
 ### 受講者が行うツールの操作
 

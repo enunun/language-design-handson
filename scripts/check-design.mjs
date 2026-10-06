@@ -125,7 +125,8 @@ function checkPackage(dir) {
         .map((b) => b.body)
         .concat(withoutCode(sec.body))
         .join("\n");
-      const rules = new Set([...math.matchAll(/\\textsf\{([^}]+)\}/g)].map((r) => r[1]));
+      // TeXでは「_」を「\_」と書くので，元に戻してから構成子名と比べる．
+      const rules = new Set([...math.matchAll(/\\textsf\{([^}]+)\}/g)].map((r) => r[1].replace(/\\_/g, "_")));
       const ctors = constructors(dir, m[1]);
       if (ctors === null) {
         problems.push(`${specDoc}: inductive ${m[1]}が見つからない`);

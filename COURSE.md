@@ -193,6 +193,9 @@ Iteration 0だけは，演習の`Mini/Parser.lean`に最初から入れておく
   `run "1 + 2" = "3"`のような具体例は`decide +kernel`で証明する．
   `native_decide`はコンパイラを信頼する公理が加わるので使わない．
 - `Except`には等しさを判定するインスタンスがないので，`typeOf t = .ok T`のような具体例は`decide`で証明できない(`failed to synthesize Decidable`になる)．`rfl`で証明する．
+- テストファイルの名前空間(`MiniTest.…`)で`theorem Steps.trans`のように定義した補題は，`h.trans`のようなドット記法では呼べない．ドット記法は`Mini.Steps.trans`を探すからである．`Steps.trans h₁ h₂`のように名前で呼ぶ．
+- `\textsf{let\_}`のように，TeXでは`_`を`\_`と書く．`check-design`は`\_`を`_`に戻してから構成子名と比べる．
+- textlintは文中の数式も文章として検査する．`$u[x := v] : B$`のように，`]`の後に空白がある数式は「かっこの外側にスペースを入れない」規則に当たる．数式を分けて書く．
 - `open Term`の後で`ite`という名前の構成子をパターンに書くと，`_root_.ite`と曖昧になる．パターンでは`.ite`と書く．
 - 警告をエラーとして扱うので，`@[inherit_doc]`を付けた記法の対象にはdocコメントが要る．
 - コンテナの中では`mise.toml`がグローバル設定として読まれるので，`mise.lock`の更新は`mise lock --global`で行う．
