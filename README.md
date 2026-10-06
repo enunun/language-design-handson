@@ -49,7 +49,7 @@ VSCodeには，証明の状態を表示するLean 4拡張と，数式とMermaid�
 | Iteration | 作る機能 | ノート |
 | --- | --- | --- |
 | [0](iterations/iteration-0/) | 自然数の四則と評価器 | [Lean](docs/lean/iteration-0.md)，[意味論](docs/semantics/iteration-0.md) |
-| 1 | 大ステップ意味論と評価器の正しさ | |
+| [1](iterations/iteration-1/) | 大ステップ意味論と評価器の正しさ | [Lean](docs/lean/iteration-1.md)，[意味論](docs/semantics/iteration-1.md) |
 | 2 | 簡約列の表示 | |
 | 3 | 真偽値と条件分岐 | |
 | 4 | 型と型検査器 | |
